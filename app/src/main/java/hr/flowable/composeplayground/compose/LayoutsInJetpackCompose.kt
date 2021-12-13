@@ -1,21 +1,21 @@
 package hr.flowable.composeplayground.compose
 
-import androidx.compose.foundation.Image
+import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
-import hr.flowable.composeplayground.R
 import hr.flowable.composeplayground.compose.ui.theme.ComposePlaygroundTheme
 
 /**
@@ -29,7 +29,15 @@ import hr.flowable.composeplayground.compose.ui.theme.ComposePlaygroundTheme
 @Composable
 fun PhotographerCard() {
 
-    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(4.dp))
+            .background(MaterialTheme.colors.surface)
+            .clickable { Log.d("žžž", "clicked") }
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Surface(
             modifier = Modifier.size(50.dp),
             shape = CircleShape,
@@ -38,14 +46,14 @@ fun PhotographerCard() {
 
         }
 
-        Image(
-            bitmap = ImageBitmap.imageResource(id = R.drawable.img_alfred_sisley),
-            contentDescription = "Alfred Sisley",
-            modifier = Modifier
-                .width(48.dp)
-                .height(48.dp)
-                .clip(CircleShape)
-        )
+//        Image(
+//            bitmap = ImageBitmap.imageResource(id = R.drawable.img_alfred_sisley),
+//            contentDescription = "Alfred Sisley",
+//            modifier = Modifier
+//                .width(48.dp)
+//                .height(48.dp)
+//                .clip(CircleShape)
+//        )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -66,7 +74,7 @@ fun PhotographerCard() {
 }
 
 @ExperimentalUnitApi
-@Preview(showBackground = true)
+@Preview(showBackground = false)
 @Composable
 fun PhotographerCardPreview() {
     ComposePlaygroundTheme {
