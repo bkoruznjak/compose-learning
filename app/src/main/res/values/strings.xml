@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ComposePlayground</string>
+    <string name="title_activity_jetpack_compose_basics">JetpackComposeBasicsActivity</string>
+</resources>
