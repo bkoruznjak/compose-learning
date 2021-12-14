@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -70,6 +72,37 @@ fun PhotographerCard() {
                 Text(text = "3 minutes ago")
             }
         }
+    }
+}
+
+@Composable
+fun BodyContent(modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        Text("Hi there")
+        Text("How are you")
+    }
+}
+
+@Preview
+@Composable
+fun LayoutCodeLab() {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Layouts codelab") },
+                actions = {
+                    IconButton(onClick = { Log.d("žžž", "Clicked action") }) {
+                        Icon(Icons.Filled.Favorite, contentDescription = null)
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        BodyContent(
+            Modifier
+                .padding(innerPadding)
+                .padding(8.dp)
+        )
     }
 }
 
