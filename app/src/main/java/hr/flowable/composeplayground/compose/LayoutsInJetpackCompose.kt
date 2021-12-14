@@ -15,6 +15,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.ExperimentalUnitApi
@@ -131,23 +132,34 @@ fun ListThatScrolls() {
  *
  * also does not support "repeat" but instead supports "items"
  */
-@ExperimentalUnitApi
 @Composable
 fun LazyListThatScrolls() {
     val scrollState = rememberLazyListState()
     val loremPicsum = "https://picsum.photos/200/300?id="
     LazyColumn(state = scrollState, modifier = Modifier.fillMaxWidth()) {
         items(100) { index ->
-            Image(
-                painter = rememberImagePainter(
-                    data = "$loremPicsum$index",
-                    builder = {
-                        crossfade(true)
-                        transformations(CircleCropTransformation())
-                    }),
-                contentDescription = null,
-                modifier = Modifier.size(128.dp)
-            )
+            val sizeOfImage = 128.dp
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(sizeOfImage)
+                        .clip(CircleShape)
+                        .background(Color.LightGray)
+                ) {
+                    Image(
+                        painter = rememberImagePainter(
+                            data = "$loremPicsum$index",
+                            builder = {
+                                crossfade(500)
+                                transformations(CircleCropTransformation())
+                            }),
+                        contentDescription = null,
+                        modifier = Modifier.size(sizeOfImage)
+                    )
+                }
+                Spacer(Modifier.width(16.dp))
+                Text("Item no: #$index", style = MaterialTheme.typography.h4)
+            }
         }
     }
 }
