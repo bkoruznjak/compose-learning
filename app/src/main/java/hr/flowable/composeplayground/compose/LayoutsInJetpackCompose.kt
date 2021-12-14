@@ -1,15 +1,12 @@
 package hr.flowable.composeplayground.compose
 
 import android.util.Log
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -22,6 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
 import hr.flowable.composeplayground.compose.ui.theme.ComposePlaygroundTheme
 
 /**
@@ -136,10 +135,19 @@ fun ListThatScrolls() {
 @Composable
 fun LazyListThatScrolls() {
     val scrollState = rememberLazyListState()
-
-    LazyColumn(state = scrollState) {
-        items(100) {
-            CellWithExpandingButton("$it")
+    val loremPicsum = "https://picsum.photos/200/300?id="
+    LazyColumn(state = scrollState, modifier = Modifier.fillMaxWidth()) {
+        items(100) { index ->
+            Image(
+                painter = rememberImagePainter(
+                    data = "$loremPicsum$index",
+                    builder = {
+                        crossfade(true)
+                        transformations(CircleCropTransformation())
+                    }),
+                contentDescription = null,
+                modifier = Modifier.size(128.dp)
+            )
         }
     }
 }

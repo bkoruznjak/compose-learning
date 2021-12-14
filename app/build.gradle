@@ -12,10 +12,10 @@ android {
                 properties.load(rootProject.file("local.properties").newDataInputStream())
             }
 
-            storeFile file(properties.getProperty("signing.key",""))
-            storePassword properties.getProperty("signing.store.password","")
-            keyAlias properties.getProperty("signing.key.alias","")
-            keyPassword properties.getProperty("signing.key.password","")
+            storeFile file(properties.getProperty("signing.key", ""))
+            storePassword properties.getProperty("signing.store.password", "")
+            keyAlias properties.getProperty("signing.key.alias", "")
+            keyPassword properties.getProperty("signing.key.password", "")
         }
     }
     compileSdk 31
@@ -99,4 +99,7 @@ dependencies {
 
     // UI Tests
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.0.5'
+
+    // Coil
+    implementation "io.coil-kt:coil-compose:1.4.0"
 }
