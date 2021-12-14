@@ -42,7 +42,7 @@ private fun Greeting(name: String) {
 }
 
 @Composable
-private fun CellWithExpandingButton(name: String) {
+fun CellWithExpandingButton(name: String) {
 
     var expanded = rememberSaveable { mutableStateOf(false) }
 

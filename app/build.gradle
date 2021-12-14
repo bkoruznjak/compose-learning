@@ -4,6 +4,20 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+
+            Properties properties = new Properties()
+            if (rootProject.file("local.properties").exists()) {
+                properties.load(rootProject.file("local.properties").newDataInputStream())
+            }
+
+            storeFile file(properties.getProperty("signing.key",""))
+            storePassword properties.getProperty("signing.store.password","")
+            keyAlias properties.getProperty("signing.key.alias","")
+            keyPassword properties.getProperty("signing.key.password","")
+        }
+    }
     compileSdk 31
 
     buildFeatures {
@@ -26,11 +40,12 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

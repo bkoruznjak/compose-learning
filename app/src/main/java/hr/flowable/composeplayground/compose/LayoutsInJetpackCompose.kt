@@ -4,8 +4,12 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -103,6 +107,40 @@ fun LayoutCodeLab() {
                 .padding(innerPadding)
                 .padding(8.dp)
         )
+    }
+}
+
+@ExperimentalUnitApi
+@Composable
+fun ListThatScrolls() {
+    val scrollState = rememberScrollState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(scrollState)
+    ) {
+        repeat(100) {
+            CellWithExpandingButton("$it")
+        }
+    }
+}
+
+/**
+ * Main difference between column is that the scroll state is passed to the composable
+ * constructor instead of the modifier
+ *
+ * also does not support "repeat" but instead supports "items"
+ */
+@ExperimentalUnitApi
+@Composable
+fun LazyListThatScrolls() {
+    val scrollState = rememberLazyListState()
+
+    LazyColumn(state = scrollState) {
+        items(100) {
+            CellWithExpandingButton("$it")
+        }
     }
 }
 
