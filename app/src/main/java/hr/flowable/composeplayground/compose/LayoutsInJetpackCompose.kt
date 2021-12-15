@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import hr.flowable.composeplayground.compose.ui.theme.ComposePlaygroundTheme
+import kotlinx.coroutines.launch
 
 /**
  * Codelab link:
@@ -135,33 +137,66 @@ fun ListThatScrolls() {
 @Composable
 fun LazyListThatScrolls() {
     val scrollState = rememberLazyListState()
+
+    val listSize = 100
+
+    val listScope = rememberCoroutineScope()
+
     val loremPicsum = "https://picsum.photos/200/300?id="
-    LazyColumn(state = scrollState, modifier = Modifier.fillMaxWidth()) {
-        items(100) { index ->
-            val sizeOfImage = 128.dp
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(sizeOfImage)
-                        .clip(CircleShape)
-                        .background(Color.LightGray)
-                ) {
-                    Image(
-                        painter = rememberImagePainter(
-                            data = "$loremPicsum$index",
-                            builder = {
-                                crossfade(500)
-                                transformations(CircleCropTransformation())
-                            }),
-                        contentDescription = null,
-                        modifier = Modifier.size(sizeOfImage)
-                    )
+
+    Column {
+        Row(Modifier.padding(8.dp)) {
+            OutlinedButton(
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    listScope.launch {
+                        scrollState.animateScrollToItem(0)
+                    }
+                }) {
+                Text("Scroll to top")
+            }
+
+            Spacer(Modifier.width(8.dp))
+
+            OutlinedButton(
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    listScope.launch {
+                        scrollState.animateScrollToItem(listSize - 1)
+                    }
+                }) {
+                Text("Scroll to bottom")
+            }
+        }
+
+        LazyColumn(state = scrollState, modifier = Modifier.fillMaxWidth()) {
+            items(listSize) { index ->
+                val sizeOfImage = 128.dp
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(sizeOfImage)
+                            .clip(CircleShape)
+                            .background(Color.LightGray)
+                    ) {
+                        Image(
+                            painter = rememberImagePainter(
+                                data = "$loremPicsum$index",
+                                builder = {
+                                    crossfade(500)
+                                    transformations(CircleCropTransformation())
+                                }),
+                            contentDescription = null,
+                            modifier = Modifier.size(sizeOfImage)
+                        )
+                    }
+                    Spacer(Modifier.width(16.dp))
+                    Text("Item no: #$index", style = MaterialTheme.typography.h4)
                 }
-                Spacer(Modifier.width(16.dp))
-                Text("Item no: #$index", style = MaterialTheme.typography.h4)
             }
         }
     }
+
 }
 
 @ExperimentalUnitApi
