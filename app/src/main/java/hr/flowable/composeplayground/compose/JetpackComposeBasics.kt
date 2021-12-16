@@ -84,7 +84,6 @@ fun CellWithExpandingButton(name: String) {
             IconButton(onClick = {
                 expanded.value = !expanded.value
             }) {
-
                 Image(
                     imageVector = if (expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
                     contentDescription = if (expanded.value) "Show less" else "Shoe more"
