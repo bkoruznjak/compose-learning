@@ -13,4 +13,20 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
+
+    @Test
+    fun findClosestValue(){
+        val testData = mapOf(
+            0 to -254,
+            1 to -6,
+            2 to 258
+        )
+
+        val valueToCheck = 250
+
+        val closestItem = testData.map { it.key to it.value - valueToCheck }.minByOrNull { it.second }
+
+        assertEquals(2,closestItem!!.first)
+
+    }
 }
