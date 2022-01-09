@@ -53,5 +53,4 @@ fun SimpleList() {
             CellItem()
         }
     }
-
 }
