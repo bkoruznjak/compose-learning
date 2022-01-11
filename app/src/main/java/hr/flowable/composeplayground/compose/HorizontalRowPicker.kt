@@ -1,7 +1,8 @@
 package hr.flowable.composeplayground.compose
 
-import android.util.Log
+import androidx.compose.animation.core.AnimationConstants.DefaultDurationMillis
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -21,12 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 val data = listOf("Pounds", "Kilograms", "Stones")
@@ -41,12 +39,10 @@ data class MeasurementState(
 @Composable
 fun HorizontalRowPicker() {
   var state by remember {
-    mutableStateOf(MeasurementState(1))
+    mutableStateOf(MeasurementState(2))
   }
 
-  Log.d("žžž", "state $state")
-
-  HorizontalRow(state.selectedIndex, state.previousIndex, data) {
+  CenteredSelectionMenu(state.selectedIndex, state.previousIndex) {
     state = state.copy(
       selectedIndex = it,
       previousIndex = state.selectedIndex
@@ -55,10 +51,9 @@ fun HorizontalRowPicker() {
 }
 
 @Composable
-private fun HorizontalRow(
+private fun CenteredSelectionMenu(
   selectedIndex: Int,
   previousIndex: Int,
-  items: List<String>,
   onItemClick: (Int) -> Unit
 ) {
   val density = LocalDensity.current
@@ -67,12 +62,9 @@ private fun HorizontalRow(
     LocalConfiguration.current.screenWidthDp.dp.toPx()
   }
 
-  val halfscreenWidth = screenWidthInInPx * 0.5f
+  val halfScreenWidth = screenWidthInInPx * 0.5f
 
   val scrollState = rememberLazyListState()
-  Log.d("žžž", "recomposing row")
-
-  val itemPositions by remember { mutableStateOf(ItemPositions()) }
 
   val itemOffsetsFromParentCenterInPx by remember {
     mutableStateOf(
@@ -85,12 +77,13 @@ private fun HorizontalRow(
   }
 
   val floatOffset by animateFloatAsState(
-    targetValue = if (
-      previousIndex != NO_INDEX &&
-      itemPositions.horizontalPositions[previousIndex] != null &&
-      itemPositions.horizontalPositions[selectedIndex] != null
-    ) itemOffsetsFromParentCenterInPx[selectedIndex]!! else itemOffsetsFromParentCenterInPx[selectedIndex]
-      ?: 0f
+    animationSpec = tween(
+      durationMillis = if (previousIndex == NO_INDEX) 0 else DefaultDurationMillis
+    ),
+    targetValue = when {
+      itemOffsetsFromParentCenterInPx[selectedIndex] != null -> itemOffsetsFromParentCenterInPx[selectedIndex]!!
+      else                                                   -> 0f
+    }
   )
 
   LazyRow(
@@ -101,34 +94,26 @@ private fun HorizontalRow(
     horizontalArrangement = Arrangement.Center
   ) {
 
-
     items(count = data.count()) { index ->
       Cell(
         text = data[index],
         isSelected = index == selectedIndex,
         onItemClick = { onItemClick(index) },
         modifier = Modifier.onGloballyPositioned {
-          val positionInParent = it.positionInParent()
-          val positionOnScreen = it.positionInWindow()
-          val screenHalf = halfscreenWidth
-
-          if (itemPositions.horizontalPositions[index] == null) {
-            itemPositions.horizontalPositions[index] = positionInParent.x
+          if (itemOffsetsFromParentCenterInPx[index] == null) {
+            //Item center offsets from window center are calculated once and remembered
+            val positionOnScreen = it.positionInWindow()
+            val screenHalf = halfScreenWidth
             val halfItemWidth = it.boundsInWindow().width * 0.5f
             val offsetInPixels = screenHalf - (positionOnScreen.x + halfItemWidth)
             itemOffsetsFromParentCenterInPx[index] = with(density) {
               offsetInPixels.toDp().value
             }
-            Log.d("žžž", "${data[index]} offset ${itemOffsetsFromParentCenterInPx[index]}")
           }
         })
     }
   }
 }
-
-data class ItemPositions(
-  val horizontalPositions: MutableMap<Int, Float> = mutableMapOf()
-)
 
 @Composable
 private fun Cell(
