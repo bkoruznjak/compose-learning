@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import hr.flowable.composeplayground.compose.AnimatedLists
+import hr.flowable.composeplayground.compose.HorizontalRowPicker
 
 class MainActivity : AppCompatActivity() {
 
@@ -12,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AnimatedLists()
+            HorizontalRowPicker()
         }
     }
 }
