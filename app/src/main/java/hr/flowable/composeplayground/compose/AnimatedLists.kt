@@ -10,30 +10,35 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 
+@OptIn(ExperimentalUnitApi::class)
 @Composable
 fun AnimatedLists() {
 
     AnimatedList()
 }
 
+@ExperimentalUnitApi
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Preview(showBackground = true)
 private fun AnimatedList() {
+    var counter by remember { mutableStateOf(17) }
+
     var list by remember {
         mutableStateOf(
             listOf(
@@ -56,13 +61,48 @@ private fun AnimatedList() {
             )
         )
     }
+
+    var animationStates: List<Int> by remember { mutableStateOf(emptyList()) }
+    // mutableSetOf()//by remember { mutableStateOf(mutableSetOf()) }
+
     val scrollState = rememberLazyListState()
 
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
+        LazyColumn(state = scrollState) {
 
-    LazyColumn(state = scrollState) {
+            items(list) {
+                AnimatableText(
+                    text = "item $it",
+                    isAnimated = animationStates.contains(it),
+                    isSender = it % 2 == 0,
+                    onAnimationTrigger = {
+                        if (!animationStates.contains(it))
+                            animationStates = listOf(
+                                it,
+                                *animationStates.toTypedArray()
+                            )
 
-        items(list) {
-            AnimatableText("item $it", isSender = it % 2 == 0)
+                    }
+                )
+            }
+        }
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(128.dp)
+                .padding(24.dp)
+                .background(color = Color.Red)
+                .clickable {
+                    Log.d("žžž", "add more items")
+                    list = listOf(
+                        counter,
+                        *list.toTypedArray()
+                    )
+                    counter = counter.inc()
+                }) {
+
+            Text("+", fontSize = TextUnit(48f, TextUnitType.Sp))
         }
     }
 
@@ -101,14 +141,20 @@ private fun AnimatableTextWithHardcodedBox(text: String) {
 }
 
 @Composable
-private fun AnimatableText(text: String, isSender: Boolean = false) {
+private fun AnimatableText(
+    text: String,
+    isAnimated: Boolean,
+    onAnimationTrigger: () -> Unit,
+    isSender: Boolean = false
+) {
     val screenWidthInDp = LocalConfiguration.current.screenWidthDp.dp
     val offset: Dp = if (isSender) screenWidthInDp else -screenWidthInDp
 
     var startAnimation by remember { mutableStateOf(false) }
 
+    val shouldSetOffset = !startAnimation && !isAnimated
     val slide = animateDpAsState(
-        targetValue = if (startAnimation) 0f.dp else offset,
+        targetValue = if (!isAnimated) offset else 0f.dp,
         animationSpec = spring(
             dampingRatio = DampingRatioLowBouncy,
             stiffness = StiffnessVeryLow,
@@ -121,7 +167,9 @@ private fun AnimatableText(text: String, isSender: Boolean = false) {
         .fillMaxWidth()
         .onGloballyPositioned {
             Log.d("žžž", "activating $text")
-            startAnimation = true
+            //startAnimation = true
+            //maybe move this above?
+            onAnimationTrigger()
         }) {
 
 
