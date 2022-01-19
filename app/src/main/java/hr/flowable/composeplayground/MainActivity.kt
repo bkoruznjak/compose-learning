@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import hr.flowable.composeplayground.compose.AnimatedVisibilityLazyColumnDemo
+import hr.flowable.composeplayground.compose.SmileyPicker
 
 class MainActivity : AppCompatActivity() {
 
@@ -12,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AnimatedVisibilityLazyColumnDemo()
+            SmileyPicker()
         }
     }
 }
